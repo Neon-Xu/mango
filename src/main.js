@@ -2,16 +2,20 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import iView from 'iview';
+import 'iview/dist/styles/iview.css';
 
 import Routers from './routers/main';
 import App from './App.vue';
 
-import 'iview/dist/styles/iview.css';
-import './styles/common.css';
 
+import './styles/common.css';
 
 Vue.use(VueRouter);
 Vue.use(iView);
+
+import request from './utils/request';
+Vue.prototype.$http = request;
+
 
 const RouterConfig = {
     routes: Routers

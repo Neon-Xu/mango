@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const webpackBaseConfig = require('./webpack.base.config.js');
@@ -11,20 +10,8 @@ fs.open('./src/config/env.js', 'w', function (err, fd) {
 });
 
 module.exports = merge(webpackBaseConfig, {
-    output: {
-        publicPath: '/dist/',
-        filename: 'scripts/[name].[hash].js',
-        chunkFilename: 'scripts/[name].[hash].chunk.js'
-    },
+
     plugins: [
-        new ExtractTextPlugin({
-            filename: 'styles/[name].[hash].css',
-            allChunks: true
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendors',
-            filename: 'scripts/vendors.[hash].js'
-        }),
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: '"production"'
@@ -34,12 +21,6 @@ module.exports = merge(webpackBaseConfig, {
             compress: {
                 warnings: false
             }
-        }),
-        new HtmlWebpackPlugin({
-            filename: './index.html',
-            template: './src/templates/index.ejs',
-            inject: true,
-            chunks: ['main','vendors']
         })
     ]
 });

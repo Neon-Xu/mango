@@ -1,17 +1,20 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
 
 
 module.exports = {
     entry: {
         main: './src/main',
-        vendors: './src/vendors'
+        vendors: './src/vendors',
     },
     output: {
-        path: path.resolve(__dirname, './dist')
+        path: path.resolve(__dirname, './dist'),
+        publicPath: '/',
+        filename: 'scripts/[name].[hash].js',
+        chunkFilename: 'scripts/[name].[hash].chunk.js'
     },
     module: {
         rules: [
@@ -23,7 +26,7 @@ module.exports = {
                         options: {
                             loaders: {
                                 css: ExtractTextPlugin.extract({
-                                    use: 'css-loader',
+                                    use: ['css-loader?minimize', 'postcss-loader'],
                                     fallback: 'vue-style-loader' 
                                 })
                             }
@@ -49,9 +52,9 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({
-                        use: ['css-loader?minimize', 'postcss-loader'],
-                        fallback: 'style-loader'
-                    })
+                    use: ['css-loader?minimize', 'postcss-loader'],
+                    fallback: 'style-loader'
+                })
             },
             {
                 test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
@@ -59,7 +62,7 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {
-                            outputPath: 'images/'
+                            outputPath: 'images'
                         }  
                     }
                 ]
@@ -76,5 +79,20 @@ module.exports = {
             'vue': 'vue/dist/vue.esm.js',
             '@views':  path.join(__dirname, "src", "views")
         }
-    }
+    },
+    plugins: [
+        new WebpackCleanupPlugin(),
+        new ExtractTextPlugin('styles/[name].css'),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendors',
+            filename: 'scripts/vendors.js',
+            minChunks: Infinity
+        }),
+        new HtmlWebpackPlugin({
+            filename: './index.html',
+            template: './src/templates/index.ejs',
+            inject: true,
+            chunks: ['main','vendors']
+        }),
+    ]
 };

@@ -11,32 +11,6 @@ fs.open('./src/config/env.js', 'w', function (err, fd) {
 });
 
 
-const IVIEWCSS = new ExtractTextPlugin('styles/iview.css');
-const COMMONCSS = new ExtractTextPlugin('styles/common.css');
-
-
 module.exports = merge(webpackBaseConfig, {
-    devtool: '#source-map',
-    output: {
-        publicPath: '/dist/',
-        filename: '[name].js',
-        chunkFilename: '[name].chunk.js'
-    },
-    plugins: [
-        IVIEWCSS,
-        COMMONCSS,
-        new ExtractTextPlugin({
-            filename: '[name].css'
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendors',
-            filename: 'vendors.js'
-        }),
-        new HtmlWebpackPlugin({
-            filename: './index.html',
-            template: './src/templates/index.ejs',
-            inject: true,
-            chunks: ['main','vendors']
-        }),
-    ]
+    devtool: '#source-map'
 });
